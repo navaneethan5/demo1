@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -92,7 +94,8 @@ public class ProductService {
 		
 			ProductDetail productDetail = new ProductDetail();
 			RestTemplate restTemplate = new RestTemplate();
-			response = restTemplate.getForEntity(constructURL(productId), String.class);			
+			response = restTemplate.getForEntity(constructURL(productId), String.class);	
+			
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode root = mapper.readTree(response.getBody());					
 			JsonNode tcin = root.path("product").path("item").path("tcin");			
@@ -103,6 +106,7 @@ public class ProductService {
 			productDetail.setMessage(message.asText());			
 			return productDetail;
 		}
+
 		catch(Exception e){
 			
 			return response;
